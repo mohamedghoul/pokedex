@@ -1,0 +1,12 @@
+body {
+    background-color: #3D7DCA;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 40px;
+    font-family: Quicksand, sans-serif;
+}
+
+.container-logo {
+    display: flex;
+    justify-content: center;
+}
