@@ -1,9 +1,18 @@
 // Get pokemon container from HTML
 const pokedex = document.getElementById('pokedex')
 
+// Function to get the number of Pokemon in the PokeAPI
+async function getPokemonCount(){
+    const url = 'https://pokeapi.co/api/v2/pokemon'
+    const response = await fetch(url)
+    const data = await response.json()
+    return data.count
+}
+
 // Function to fetch the pokemon data from the PokeAPI and save them locally
 async function fetchPokemons() {
-    const url = 'https://pokeapi.co/api/v2/pokemon/?limit=50'
+    const count = await getPokemonCount()
+    const url = `https://pokeapi.co/api/v2/pokemon/?limit=${count}`
     const response = await fetch(url)
     const data = await response.json()
     const pokemons = data.results.map((result, index) => ({
