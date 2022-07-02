@@ -174,7 +174,12 @@ function displayMoves(moves) {
     </li>
     `
     ).join('')
-    container.innerHTML = '<ol id="moves">' + moveToHTML + '</ol>'
+    container.innerHTML = `
+    <div class="search-sort-filter">
+        <input type="text" id="search-input" onkeyup="searchMoves()" placeholder="Search for Moves" title="Enter a move name">
+    </div>
+    <ol id="moves">${moveToHTML}</ol>
+    `
 }
 
 // Function to fetch abilities from the PokeAPI
@@ -200,10 +205,15 @@ function displayAbilities(abilities) {
     </li>
     `
     ).join('')
-    container.innerHTML = '<ol id="abilities">' + abilityToHTML + '</ol>'
+    container.innerHTML = `
+    <div class="search-sort-filter">
+        <input type="text" id="search-input" onkeyup="searchAbilities()" placeholder="Search for Abilities" title="Enter an ability name">
+    </div>
+    <ol id="abilities">${abilityToHTML}</ol>
+    `
 }
 
-// Function to search for a particular pokemon
+// Function to search for a pokemon
 function searchPokemon() {
     var input = document.getElementById("search-input");
     var filter = input.value.toUpperCase();
@@ -216,6 +226,38 @@ function searchPokemon() {
             pokemon[i].style.display = "";
         } else {
             pokemon[i].style.display = "none";
+        }
+    }
+}
+
+function searchMoves() {
+    var input = document.getElementById("search-input");
+    var filter = input.value.toUpperCase();
+    var moves = document.getElementById("moves");
+    var move = moves.getElementsByTagName("li");
+    for (i = 0; i < move.length; i++) {
+        var name = move[i].querySelector(".card-name");
+        var text = name.textContent || name.innerText;
+        if (text.toUpperCase().indexOf(filter) > -1) {
+            move[i].style.display = "";
+        } else {
+            move[i].style.display = "none";
+        }
+    }
+}
+
+function searchAbilities() {
+    var input = document.getElementById("search-input");
+    var filter = input.value.toUpperCase();
+    var abilities = document.getElementById("abilities");
+    var ability = abilities.getElementsByTagName("li");
+    for (i = 0; i < ability.length; i++) {
+        var name = ability[i].querySelector(".card-name");
+        var text = name.textContent || name.innerText;
+        if (text.toUpperCase().indexOf(filter) > -1) {
+            ability[i].style.display = "";
+        } else {
+            ability[i].style.display = "none";
         }
     }
 }
