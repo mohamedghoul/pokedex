@@ -16,7 +16,42 @@ body {
     padding-block: 40px;
 }
 
-#pokedex {
+.navbar {
+    display: flex;
+    justify-content: space-evenly;
+    padding-bottom: 20px;
+}
+
+.tabs {
+    font-size: 20px;
+    background-color: #2C2D9A;
+    color: #FFDE00;
+    border: solid 1px #000000;
+    border-radius: 15px;
+    padding: 10px;
+    transition: transform 0.25s;
+}
+
+.tabs:hover {
+    background-color: #FFDE00;
+    color: #2C2D9A;
+    cursor: pointer;
+    transform: translateY(-3px);
+}
+
+#search-input {
+    background-image: url('../media/search_icon.png');
+    background-position: 10px 12px;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    width: 30%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+}
+
+#pokedex, #moves, #abilities {
     padding-inline-start: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -61,11 +96,24 @@ body {
 }
 
 #close-popup {
+    background-color: #3D7DCA;
+    padding: 10px 20px;
+    border: none;
+    color: #FFFFFF;
+    border-radius: 3px;
+    transition: transform 0.25s;
     position: absolute;
     top: 20px;
     right: 20px;
     padding: 10px;
     cursor: pointer;
+}
+
+#close-popup:hover {
+    background-color: #FFFFFF;
+    color: #3D7DCA;
+    cursor: pointer;
+    transform: translateY(-3px);
 }
 
 .popup-content {
@@ -77,12 +125,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-y: scroll;
 }
 
 .popup-title {
     font-size: 32px;
     font-weight: normal;
     margin-bottom: 0px;
+    overflow-y: scroll;
 }
 
 .popup-image {
@@ -96,17 +146,7 @@ body {
 }
 
 button {
-    background-color: #3D7DCA;
-    padding: 10px 20px;
-    border: none;
-    color: #FFFFFF;
-    border-radius: 3px;
-    transition: transform 0.25s;
 }
 
 button:hover{
-    background-color: #FFFFFF;
-    color: #3D7DCA;
-    cursor: pointer;
-    transform: translateY(-3px);
 }

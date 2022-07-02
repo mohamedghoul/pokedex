@@ -1,5 +1,5 @@
-// Get pokemon container from HTML
-const pokedex = document.getElementById('pokedex')
+// Get container from HTML
+const container = document.getElementById('container')
 
 // Function to get the number of Pokemon in the PokeAPI
 async function getPokemonCount(){
@@ -9,7 +9,23 @@ async function getPokemonCount(){
     return data.count
 }
 
-// Function to fetch the pokemon data from the PokeAPI and save them locally
+// Function to get the number of moves in the PokeAPI
+async function getMoveCount(){
+    const url = 'https://pokeapi.co/api/v2/move'
+    const response = await fetch(url)
+    const data = await response.json()
+    return data.count
+}
+
+// Function to get the number of abilities in the PokeAPI
+async function getAbilityCount(){
+    const url = 'https://pokeapi.co/api/v2/ability'
+    const response = await fetch(url)
+    const data = await response.json()
+    return data.count
+}
+
+// Function to fetch the pokemon data from the PokeAPI
 async function fetchPokemons() {
     const count = await getPokemonCount()
     const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/?limit=${count}`
@@ -21,11 +37,11 @@ async function fetchPokemons() {
         id: index + 1,
         image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index+1}.png`
     }))
-    displayPokemonOnHomeScreen(pokemons)
+    displayPokemon(pokemons)
 }
  
 // Function to display Pokemon on the home screen
-function displayPokemonOnHomeScreen(pokemons) {
+function displayPokemon(pokemons) {
     // HTML string to inject into the home page
     const pokemonToHTML = pokemons.map((pokemon) => `
     <li class="card" onclick="selectPokemon(${pokemon.id})">
@@ -35,7 +51,12 @@ function displayPokemonOnHomeScreen(pokemons) {
     </li>
     `
     ).join('')
-    pokedex.innerHTML = pokemonToHTML
+    container.innerHTML = `
+    <div class="search-sort-filter">
+        <input type="text" id="search-input" onkeyup="searchPokemon()" placeholder="Search for Pokemon" title="Enter a pokemon name">
+    </div>
+    <ol id="pokedex">${pokemonToHTML}</ol>
+    `
 }
 
 // Function that returns the gender of a particular pokemon
@@ -82,11 +103,11 @@ async function selectPokemon(id) {
     const pokemon = await response.json()
     const gender = await getPokemonGender(pokemon.name)
     pokemon.gender = gender.map((gen) => gen).join(', ')
-    displayPopup(pokemon)
+    displayPokemonPopup(pokemon)
 }
 
 // Function that displays pokemon details in a popup window
-function displayPopup(pokemon){
+function displayPokemonPopup(pokemon){
     const type = pokemon.types.map((type) => type.type.name).join(", ")
     const moves = pokemon.moves.map((move) => move.move.name).join(", ")
     const abilities = pokemon.abilities.map((ability) => ability.ability.name).join(", ")
@@ -113,14 +134,14 @@ function displayPopup(pokemon){
                 <strong>Sepcial Defense: </strong>${pokemon.stats[4].base_stat}<br>
                 <strong>Speed: </strong>${pokemon.stats[5].base_stat}</p>
                 <h4>Moves</h4>
-                <p>${moves}</p>
+                <p class="pokemon-moves">${moves}</p>
                 <h4>Abilities</h4>
                 <p>${abilities}</p>
             </div>
         </div>
     </div>
     `
-    pokedex.innerHTML = pokemonDetailsToHTML + pokedex.innerHTML
+    container.innerHTML = pokemonDetailsToHTML + container.innerHTML
 }
 
 // Function to close the popup and restore the home page to its original state
@@ -130,4 +151,72 @@ function closePopup() {
     fetchPokemons()
 }
 
-fetchPokemons()
+// Function to fetch moves from the PokeAPI
+async function fetchMoves() {
+    const count = await getMoveCount()
+    const movesUrl = `https://pokeapi.co/api/v2/move/?limit=${count}`
+    const movesResponse = await fetch(movesUrl)
+    const movesData = await movesResponse.json()
+    const moves = movesData.results.map((result, index) => ({
+        ...result,
+        name: result.name,
+        id: index + 1,
+    }))
+    displayMoves(moves)
+}
+
+// Function to display moves on the home screen
+function displayMoves(moves) {
+    // HTML string to inject into the home page
+    const moveToHTML = moves.map((move) => `
+    <li class="card" onclick="">
+    <h2 class="card-name">${move.name}</h2>
+    </li>
+    `
+    ).join('')
+    container.innerHTML = '<ol id="moves">' + moveToHTML + '</ol>'
+}
+
+// Function to fetch abilities from the PokeAPI
+async function fetchAbilities() {
+    const count = await getAbilityCount()
+    const abilitiesUrl = `https://pokeapi.co/api/v2/ability/?limit=${count}`
+    const abilitiesResponse = await fetch(abilitiesUrl)
+    const abilitiesData = await abilitiesResponse.json()
+    const abilities = abilitiesData.results.map((result, index) => ({
+        ...result,
+        name: result.name,
+        id: index + 1,
+    }))
+    displayAbilities(abilities)
+}
+
+// Function to display abilities on the home screen
+function displayAbilities(abilities) {
+    // HTML string to inject into the home page
+    const abilityToHTML = abilities.map((ability) => `
+    <li class="card" onclick="">
+    <h2 class="card-name">${ability.name}</h2>
+    </li>
+    `
+    ).join('')
+    container.innerHTML = '<ol id="abilities">' + abilityToHTML + '</ol>'
+}
+
+// Function to search for a particular pokemon
+function searchPokemon() {
+    var input, filter, ol, li, h2, i, txtValue;
+    input = document.getElementById("search-input");
+    filter = input.value.toUpperCase();
+    ol = document.getElementById("pokedex");
+    li = ol.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        h2 = li[i].querySelector(".card-name");
+        txtValue = h2.textContent || h2.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+        }
+    }
+}
