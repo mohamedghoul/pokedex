@@ -205,18 +205,17 @@ function displayAbilities(abilities) {
 
 // Function to search for a particular pokemon
 function searchPokemon() {
-    var input, filter, ol, li, h2, i, txtValue;
-    input = document.getElementById("search-input");
-    filter = input.value.toUpperCase();
-    ol = document.getElementById("pokedex");
-    li = ol.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        h2 = li[i].querySelector(".card-name");
-        txtValue = h2.textContent || h2.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
+    var input = document.getElementById("search-input");
+    var filter = input.value.toUpperCase();
+    var pokedex = document.getElementById("pokedex");
+    var pokemon = pokedex.getElementsByTagName("li");
+    for (i = 0; i < pokemon.length; i++) {
+        var name = pokemon[i].querySelector(".card-name");
+        var text = name.textContent || name.innerText;
+        if (text.toUpperCase().indexOf(filter) > -1) {
+            pokemon[i].style.display = "";
         } else {
-            li[i].style.display = "none";
+            pokemon[i].style.display = "none";
         }
     }
 }
