@@ -123,30 +123,46 @@ body {
     width: 90vw;
     height: 90vh;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow-y: scroll;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow: scroll
 }
 
 .popup-title {
     font-size: 32px;
     font-weight: normal;
     margin-bottom: 0px;
-    overflow-y: scroll;
 }
 
 .popup-image {
     opacity: 1;
-    height: 400px;
-    padding-right: 25px;
+    height: 300px;
+    padding-right: 20px;
 }
 
 .popup-info {
-    padding-left: 25px;
+    padding-left: 20px;
 }
 
-button {
+.table{
+    width: 100%;
+    column-count: 6;
+    display: inline-block;
+    column-gap: 0px;
+    overflow: scroll;
 }
 
-button:hover{
+.table-cell {
+    border: solid 1px #000000;
+    text-align: center;
+    margin: 0;
+    padding: 5px;
+}
+
+#random-button {
+    cursor: pointer;
+    width: 10%;
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #DDDDDD;
 }

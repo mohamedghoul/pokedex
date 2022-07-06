@@ -54,6 +54,7 @@ function displayPokemon(pokemons) {
     container.innerHTML = `
     <div class="search-sort-filter">
         <input type="text" id="search-input" onkeyup="searchPokemon()" placeholder="Search for Pokemon" title="Enter a pokemon name">
+        <button id="random-button" onclick="randomPokemon()">Random</button>
     </div>
     <ol id="pokedex">${pokemonToHTML}</ol>
     `
@@ -102,16 +103,15 @@ async function selectPokemon(id) {
     const response = await fetch(url)
     const pokemon = await response.json()
     const gender = await getPokemonGender(pokemon.name)
-    pokemon.gender = gender.map((gen) => gen).join(', ')
+    pokemon.gender = gender.map((gend) => gend).join(', ')
     displayPokemonPopup(pokemon)
 }
 
 // Function that displays pokemon details in a popup window
 function displayPokemonPopup(pokemon){
     const type = pokemon.types.map((type) => type.type.name).join(", ")
-    const moves = pokemon.moves.map((move) => move.move.name).join(", ")
-    const abilities = pokemon.abilities.map((ability) => ability.ability.name).join(", ")
-    console.log(moves)
+    const moves = pokemon.moves.map((move) => { return '<p class="table-cell">' + move.move.name + '</p>' }).join(' ');
+    const abilities = pokemon.abilities.map((ability) => { return '<p class="table-cell">' + ability.ability.name + '</p>' }).join(' ');
     const image = pokemon.sprites['front_default']
     // const gender = await getPokemonGender(pokemon.name)
     // HTML string for the popup window
@@ -134,9 +134,14 @@ function displayPokemonPopup(pokemon){
                 <strong>Sepcial Defense: </strong>${pokemon.stats[4].base_stat}<br>
                 <strong>Speed: </strong>${pokemon.stats[5].base_stat}</p>
                 <h4>Moves</h4>
-                <p class="pokemon-moves">${moves}</p>
+                <div class="table">
+                    ${moves}
+                </div>
                 <h4>Abilities</h4>
-                <p>${abilities}</p>
+                <div class="table">
+                    ${abilities}
+                </div>
+                <h4>Evolutions</h4>
             </div>
         </div>
     </div>
@@ -177,6 +182,7 @@ function displayMoves(moves) {
     container.innerHTML = `
     <div class="search-sort-filter">
         <input type="text" id="search-input" onkeyup="searchMoves()" placeholder="Search for Moves" title="Enter a move name">
+        <button id="random-button" onclick="randomMove()">Random</button>
     </div>
     <ol id="moves">${moveToHTML}</ol>
     `
@@ -208,6 +214,7 @@ function displayAbilities(abilities) {
     container.innerHTML = `
     <div class="search-sort-filter">
         <input type="text" id="search-input" onkeyup="searchAbilities()" placeholder="Search for Abilities" title="Enter an ability name">
+        <button id="random-button" onclick="randomAbility()">Random</button>
     </div>
     <ol id="abilities">${abilityToHTML}</ol>
     `
@@ -230,6 +237,7 @@ function searchPokemon() {
     }
 }
 
+// Function to search for moves
 function searchMoves() {
     var input = document.getElementById("search-input");
     var filter = input.value.toUpperCase();
@@ -246,6 +254,7 @@ function searchMoves() {
     }
 }
 
+// Function to search for abilities
 function searchAbilities() {
     var input = document.getElementById("search-input");
     var filter = input.value.toUpperCase();
@@ -260,4 +269,22 @@ function searchAbilities() {
             ability[i].style.display = "none";
         }
     }
+}
+
+async function randomPokemon(){
+    const count = await getPokemonCount()
+    const random = Math.floor(Math.random() * count) + 1
+    selectPokemon(random)
+}
+
+async function randomMove(){
+    const count = await getMoveCount()
+    const random = Math.floor(Math.random() * count) + 1
+    selectMove(random)
+}
+
+async function randomAbility(){
+    const count = await getAbilityCount()
+    const random = Math.floor(Math.random() * count) + 1
+    selectAbility(random)
 }
