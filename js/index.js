@@ -3,7 +3,7 @@ const container = document.getElementById('container')
 
 // Function to get the number of Pokemon in the PokeAPI
 async function getPokemonCount(){
-    const url = 'https://pokeapi.co/api/v2/pokemon'
+    const url = 'https://pokeapi.co/api/v2/pokemon-species'
     const response = await fetch(url)
     const data = await response.json()
     return data.count
@@ -35,7 +35,7 @@ async function fetchPokemons() {
         ...result,
         name: result.name,
         id: index + 1,
-        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index+1}.png`
+        image: (index + 1 >= 899) ? '../media/questionmark_icon.png' : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index+1}.png`
     }))
     displayPokemon(pokemons)
 }
@@ -93,15 +93,28 @@ async function getPokemonGender(pokemon_name){
             gender.push("genderless");
         }
     }
+
+    if(gender.length == 0){
+        gender.push("not applicable")
+    }
     return gender
 }
 
 // Function that is executed when a user clicks on a pokemon
 // Fetches the individual pokemon's data from the PokeAPI and calls another function to display the data in a popup window
 async function selectPokemon(id) {
-    const url = `https://pokeapi.co/api/v2/pokemon/${id}`
-    const response = await fetch(url)
+    let url = `https://pokeapi.co/api/v2/pokemon/${id}`
+    let response = await fetch(url)
     const pokemon = await response.json()
+    url = `https://pokeapi.co/api/v2/pokemon-species/${id}`
+    response = await fetch(url)
+    const species = await response.json()
+    if (species.evolution_chain != null){
+        url = species.evolution_chain.url
+        response = await fetch(url)
+        const evolution_chain = await response.json()
+        pokemon.evolution_chain = evolution_chain
+    }
     const gender = await getPokemonGender(pokemon.name)
     pokemon.gender = gender.map((gend) => gend).join(', ')
     displayPokemonPopup(pokemon)
@@ -109,11 +122,10 @@ async function selectPokemon(id) {
 
 // Function that displays pokemon details in a popup window
 function displayPokemonPopup(pokemon){
-    const type = pokemon.types.map((type) => type.type.name).join(", ")
-    const moves = pokemon.moves.map((move) => { return '<p class="table-cell">' + move.move.name + '</p>' }).join(' ');
-    const abilities = pokemon.abilities.map((ability) => { return '<p class="table-cell">' + ability.ability.name + '</p>' }).join(' ');
-    const image = pokemon.sprites['front_default']
-    // const gender = await getPokemonGender(pokemon.name)
+    const type = pokemon.types.length > 0 ? pokemon.types.map((type) => type.type.name).join(", ") : 'None'
+    const moves = pokemon.moves.length > 0 ? pokemon.moves.map((move) => { return '<p class="table-cell">' + move.move.name + '</p>' }).join(' ') : 'None'
+    const abilities = pokemon.abilities.length > 0 ? pokemon.abilities.map((ability) => { return '<p class="table-cell">' + ability.ability.name + '</p>' }).join(' ') : 'None'
+    const image = (pokemon.id <= 898) ? pokemon.sprites['front_default'] : '../media/questionmark_icon.png'
     // HTML string for the popup window
     const pokemonDetailsToHTML = `
     <div class="popup">
@@ -142,6 +154,9 @@ function displayPokemonPopup(pokemon){
                     ${abilities}
                 </div>
                 <h4>Evolutions</h4>
+                <div class="evolution-container">
+                    ${pokemon.id < 899 ? displayEvolutionChain(pokemon.evolution_chain) : '<p>No evolutions</p>'}
+                </div>
             </div>
         </div>
     </div>
@@ -287,4 +302,29 @@ async function randomAbility(){
     const count = await getAbilityCount()
     const random = Math.floor(Math.random() * count) + 1
     selectAbility(random)
+}
+
+function displayEvolutionChain(evolutionChain) {
+    let chain = [];
+    var data = evolutionChain.chain;
+    
+    do {
+      let numberOfEvolutions = data.evolves_to.length;  
+      chain.push(data.species.name)
+    
+      if(numberOfEvolutions > 1) {
+        for (let i = 1;i < numberOfEvolutions; i++) { 
+          chain.push(data.evolves_to[i].species.name)
+        }
+      }
+
+      data = data.evolves_to[0];  
+    }
+    while (data != undefined && data.hasOwnProperty('evolves_to'));
+
+    const evolutionChainToHTML = chain.map((evolution) => `
+        ${evolution}
+    `
+    ).join(' --> ')
+    return evolutionChainToHTML
 }
