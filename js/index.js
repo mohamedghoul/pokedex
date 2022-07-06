@@ -11,7 +11,7 @@ async function getPokemonCount(){
     return data.count
 }
 
-// Function to fetch the pokemon data from the PokeAPI
+// Function to fetch the data of all the pokemon the PokeAPI
 async function fetchPokemons() {
     const count = await getPokemonCount()
     const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/?limit=${count}`
@@ -53,7 +53,7 @@ function displayPokemon(pokemons) {
             <option value="all">All</option>
         </select>
     </div>
-    <ol id="pokedex">${pokemonToHTML}</ol>
+    <ol id="data-container">${pokemonToHTML}</ol>
     `
 }
 
@@ -103,6 +103,7 @@ async function selectPokemon(id) {
     let url = `https://pokeapi.co/api/v2/pokemon/${id}`
     let response = await fetch(url)
     const pokemon = await response.json()
+
     url = `https://pokeapi.co/api/v2/pokemon-species/${id}`
     response = await fetch(url)
     const species = await response.json()
@@ -113,6 +114,7 @@ async function selectPokemon(id) {
         const evolution_chain = await response.json()
         pokemon.evolution_chain = evolution_chain
     }
+
     const gender = await getPokemonGender(pokemon.name)
     pokemon.gender = gender.map((gend) => gend).join(', ')
     displayPokemonPopup(pokemon)
@@ -154,7 +156,7 @@ function displayPokemonPopup(pokemon){
                 </div>
                 <h4>Evolutions</h4>
                 <div class="evolution-container">
-                    ${(pokemon.evolution_chain != undefined) ? displayEvolutionChain(pokemon.evolution_chain) : 'No evolution chain found'}
+                    ${(pokemon.evolution_chain != undefined) ? fetchEvolutionChain(pokemon.evolution_chain) : 'No evolution chain found'}
                 </div>
             </div>
         </div>
@@ -174,7 +176,7 @@ function closePokemonPopup() {
 function searchPokemon() {
     var input = document.getElementById("search-input");
     var filter = input.value.toUpperCase();
-    var pokedex = document.getElementById("pokedex");
+    var pokedex = document.getElementById("data-container");
     var pokemon = pokedex.getElementsByTagName("li");
     for (i = 0; i < pokemon.length; i++) {
         var name = pokemon[i].querySelector(".card-name");
@@ -187,13 +189,15 @@ function searchPokemon() {
     }
 }
 
+// Function that chooses a random Pokemon ID and calls the function to fetch the pokemon's data
 async function randomPokemon(){
     const count = await getPokemonCount()
     const random = Math.floor(Math.random() * count) + 1
     selectPokemon(random)
 }
 
-function displayEvolutionChain(evolutionChain) {
+// Function that extracts the evolution chain of a pokemon
+function fetchEvolutionChain(evolutionChain) {
     let chain = [];
     var data = evolutionChain.chain;
     
@@ -222,8 +226,9 @@ function displayEvolutionChain(evolutionChain) {
     }
 }
 
+// Function that sorts pokemon on the home screen according to the selected criteria
 function sortPokemon(sortBy) {
-    const pokedex = document.getElementById("pokedex");
+    const pokedex = document.getElementById("data-container");
     const pokemon = pokedex.getElementsByTagName("li");
     const pokemonArray = Array.from(pokemon)
     if (sortBy == 'id (ascending)'){
@@ -322,7 +327,7 @@ function displayMoves(moves) {
             <option value="all">All</option>
         </select>
     </div>
-    <ol id="moves">${moveToHTML}</ol>
+    <ol id="data-container">${moveToHTML}</ol>
     `
 }
 
@@ -330,7 +335,7 @@ function displayMoves(moves) {
 function searchMoves() {
     var input = document.getElementById("search-input");
     var filter = input.value.toUpperCase();
-    var moves = document.getElementById("moves");
+    var moves = document.getElementById("data-container");
     var move = moves.getElementsByTagName("li");
     for (i = 0; i < move.length; i++) {
         var name = move[i].querySelector(".card-name");
@@ -343,13 +348,14 @@ function searchMoves() {
     }
 }
 
+// Function that chooses a random move id and calls the function to fetch and display the move
 async function randomMove(){
     const count = await getMoveCount()
     const random = Math.floor(Math.random() * count) + 1
     selectMove(random)
 }
 
-// Function that fetches an ability
+// Function that fetches a move from the PokeAPI and calls the function to display it in a popup window
 async function selectMove(id) {
     let url = `https://pokeapi.co/api/v2/move/${id}`
     let response = await fetch(url)
@@ -357,7 +363,7 @@ async function selectMove(id) {
     displayMovePopup(move)
 }
 
-// Function that displays pokemon details in a popup window
+// Function that displays move details in a popup window
 function displayMovePopup(move){
     const pokemon = move.learned_by_pokemon.length > 0 ? move.learned_by_pokemon.map((pokemon) => { return '<p class="table-cell">' + pokemon.name + '</p>' }).join(' ') : 'None'
     // HTML string for the popup window
@@ -391,8 +397,9 @@ function closeMovePopup() {
     fetchMoves()
 }
 
+// Function to sort moves on the home screen based on the criteria selected by the user
 function sortMoves(sortBy) {
-    const moveList = document.getElementById("moves");
+    const moveList = document.getElementById("data-container");
     const moves = moveList.getElementsByTagName("li");
     const movesArray = Array.from(moves)
     if (sortBy == 'id (ascending)'){
@@ -451,7 +458,7 @@ async function getAbilityCount(){
     return data.count
 }
 
-// Function to fetch abilities from the PokeAPI
+// Function to fetch abilities from the PokeAPI and display them
 async function fetchAbilities() {
     const count = await getAbilityCount()
     const abilitiesUrl = `https://pokeapi.co/api/v2/ability/?limit=${count}`
@@ -491,12 +498,13 @@ function displayAbilities(abilities) {
             <option value="all">All</option>
         </select>
     </div>
-    <ol id="abilities">${abilityToHTML}</ol>
+    <ol id="data-container">${abilityToHTML}</ol>
     `
 }
 
+// Function to sort abilities on the home screen based on the criteria selected by the user
 function sortAbilities(sortBy) {
-    const abilityList = document.getElementById("abilities");
+    const abilityList = document.getElementById("data-container");
     const abilities = abilityList.getElementsByTagName("li");
     const abilitiesArray = Array.from(abilities)
     if (sortBy == 'id (ascending)'){
@@ -549,7 +557,7 @@ function sortAbilities(sortBy) {
 function searchAbilities() {
     var input = document.getElementById("search-input");
     var filter = input.value.toUpperCase();
-    var abilities = document.getElementById("abilities");
+    var abilities = document.getElementById("data-container");
     var ability = abilities.getElementsByTagName("li");
     for (i = 0; i < ability.length; i++) {
         var name = ability[i].querySelector(".card-name");
@@ -562,13 +570,14 @@ function searchAbilities() {
     }
 }
 
+// Function that selects a random ability id and calls the function to fetch the move and display it
 async function randomAbility(){
     const count = await getAbilityCount()
     const random = Math.floor(Math.random() * count) + 1
     selectAbility(random)
 }
 
-// Function that fetches an ability
+// Function that fetches an ability and calls another function to display it
 async function selectAbility(id) {
     let url = `https://pokeapi.co/api/v2/ability/${id}`
     let response = await fetch(url)
@@ -576,7 +585,7 @@ async function selectAbility(id) {
     displayAbilityPopup(ability)
 }
 
-// Function that displays pokemon details in a popup window
+// Function that displays ability details in a popup window
 function displayAbilityPopup(ability){
     const pokemon = ability.pokemon.length > 0 ? ability.pokemon.map((pokemon) => { return '<p class="table-cell">' + pokemon.pokemon.name + '</p>' }).join(' ') : 'None'
     // HTML string for the popup window

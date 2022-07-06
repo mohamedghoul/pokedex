@@ -16,6 +16,8 @@ body {
     padding-block: 40px;
 }
 
+/* Navigation and Searching / Sorting / Filtering */
+
 .navbar {
     display: flex;
     justify-content: space-evenly;
@@ -39,6 +41,22 @@ body {
     transform: translateY(-3px);
 }
 
+.bar {
+    display: flex;
+    justify-content: center;
+}
+
+.bar > * {
+    margin: 10px;
+    padding: 10px;
+}
+
+.bar-text {
+    font-size: 20px;
+    color: #FFDE00;
+    padding: 10px;
+}
+
 #search-input {
     background-image: url('../media/search_icon.png');
     background-position: 10px 12px;
@@ -51,7 +69,9 @@ body {
     margin-bottom: 12px;
 }
 
-#pokedex, #moves, #abilities {
+/* Data containers */
+
+#data-container {
     padding-inline-start: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -196,20 +216,4 @@ body {
 .popup-title, .popup-subtitle, .stats {
     padding: 0;
     text-transform: capitalize;
-}
-
-.bar {
-    display: flex;
-    justify-content: center;
-}
-
-.bar > * {
-    margin: 10px;
-    padding: 10px;
-}
-
-.bar-text {
-    font-size: 20px;
-    color: #FFDE00;
-    padding: 10px;
 }
