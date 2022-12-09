@@ -14,12 +14,6 @@ The Pokedex has 3 tabs, Pokemon, Moves and Abilities. Each tab has a fully-featu
 * Navigate to the html folder
 * Open "index.html" in your browser
 
-### OR
-
-### Visit the Heroku deployment of the Pokedex
-
-* Simply visit https://m-ghoul-pokedex.herokuapp.com/ on your browser
-
 ## Authors
 
 Mohamed Ghoul
