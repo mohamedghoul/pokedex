@@ -17,4 +17,4 @@ The Pokedex has 3 tabs, Pokemon, Moves and Abilities. Each tab has a fully-featu
 ## Authors
 
 Mohamed Ghoul
-[@m-ghoul](https://github.com/m-ghoul)
+[@mohamedghoul](https://github.com/mohamedghoul)
